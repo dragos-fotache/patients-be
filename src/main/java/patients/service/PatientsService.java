@@ -8,7 +8,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
 
-import patients.model.Patient;
+import patients.model.Patients;
 
 public enum PatientsService {
 
@@ -16,9 +16,9 @@ public enum PatientsService {
 
 	private static SessionFactory factory;
 
-	public List<Patient> getArticles() {
+	public List<Patients> getArticles() {
 
-		List<Patient> result = null;
+		List<Patients> result = null;
 		
 		factory = new Configuration().configure().buildSessionFactory();
 
@@ -27,7 +27,7 @@ public enum PatientsService {
 		try {
 			tx = session.beginTransaction();
 			
-			result = (List<Patient>)session.createQuery("FROM Patient").getResultList();
+			result = (List<Patients>)session.createQuery("FROM Patients").getResultList();
 			
 			tx.commit();
 		} catch (HibernateException e) {
