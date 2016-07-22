@@ -11,7 +11,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 
-import patients.model.Patients;
+import patients.model.Patient;
 
 @Path("/")
 public class RestService {
@@ -72,7 +72,7 @@ public class RestService {
 	@Path("/patients")
 	public Response getPatients() {
 		
-		List<Patients> articles = PatientsService.INSTANCE.getArticles();
+		List<Patient> articles = PatientsService.INSTANCE.getArticles();
 		
 		return Response
 				.status(Response.Status.OK)

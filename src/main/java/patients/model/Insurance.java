@@ -1,5 +1,5 @@
 package patients.model;
-// Generated Jul 21, 2016 5:38:04 PM by Hibernate Tools 5.1.0.Beta1
+// Generated Jul 22, 2016 1:22:24 PM by Hibernate Tools 5.1.0.Beta1
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

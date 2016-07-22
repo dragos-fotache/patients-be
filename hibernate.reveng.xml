@@ -5,6 +5,6 @@
 
 
 <table-filter match-catalog="patients" match-name="insurance"/>
-  <table-filter match-catalog="patients" match-name="patients"/>
+  <table-filter match-catalog="patients" match-name="patient"/>
   <table-filter match-catalog="patients" match-name="zip"/>
 </hibernate-reverse-engineering>
