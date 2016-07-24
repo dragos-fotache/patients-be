@@ -7,6 +7,7 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.hibernate.cfg.Configuration;
+import org.hibernate.query.Query;
 
 import patients.model.Patient;
 
@@ -16,7 +17,7 @@ public enum PatientsService {
 
 	private static SessionFactory factory;
 
-	public List<Patient> getArticles() {
+	public List<Patient> getPatients() {
 
 		List<Patient> result = null;
 		
@@ -39,6 +40,43 @@ public enum PatientsService {
 
 
 		return result;
+	}
+
+	public PatientSliceAndCount getPatientsSlice(LazyLoadData lazyLoadData) {
+		
+		factory = new Configuration().configure().buildSessionFactory();
+
+		Session session = factory.openSession();
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+			
+			Query searchQuery = session.createQuery("FROM Patient where lastName like ? or firstName like ?");
+			searchQuery.setParameter(0, "%" + lazyLoadData.getSearchStringParam() + "%");
+			searchQuery.setParameter(1, "%" + lazyLoadData.getSearchStringParam() + "%");
+			List<Patient> patients = (List<Patient>)searchQuery
+										   .setFirstResult(lazyLoadData.getFirst())
+										   .setMaxResults(lazyLoadData.getRows())
+										   .getResultList();
+			
+			Query countQuery = session.createQuery("select count(p) from Patient p where lastName like ? or firstName like ?");
+			countQuery.setParameter(0, "%" + lazyLoadData.getSearchStringParam() + "%");
+			countQuery.setParameter(1, "%" + lazyLoadData.getSearchStringParam() + "%");
+			Long count = (Long) countQuery.getSingleResult();
+			
+			tx.commit();
+			
+			return new PatientSliceAndCount(patients, count);
+			
+		} catch (HibernateException e) {
+			if (tx != null) tx.rollback();
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		
+		return null;
+
 	}
 
 }

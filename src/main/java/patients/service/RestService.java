@@ -4,8 +4,10 @@ import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
+import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
+import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
@@ -72,7 +74,21 @@ public class RestService {
 	@Path("/patients")
 	public Response getPatients() {
 		
-		List<Patient> articles = PatientsService.INSTANCE.getArticles();
+		List<Patient> articles = PatientsService.INSTANCE.getPatients();
+		
+		return Response
+				.status(Response.Status.OK)
+				.entity(articles)
+				.build();
+	}
+	
+	@POST
+	@Produces("application/json")
+	@Consumes("application/json")
+	@Path("/patients")
+	public Response getPatientsSlice(LazyLoadData lazyLoadData) {
+		
+		PatientSliceAndCount articles = PatientsService.INSTANCE.getPatientsSlice(lazyLoadData);
 		
 		return Response
 				.status(Response.Status.OK)
