@@ -96,5 +96,19 @@ public class RestService {
 				.build();
 	}
 	
+	@POST
+	@Produces("application/json")
+	@Consumes("application/json")
+	@Path("/insurances")
+	public Response getInsurancesSlice(LazyLoadData lazyLoadData) {
+		
+		InsuranceSliceAndCount insurances = PatientsService.INSTANCE.getInsurancesSlice(lazyLoadData);
+		
+		return Response
+				.status(Response.Status.OK)
+				.entity(insurances)
+				.build();
+	}
+	
 	
 }

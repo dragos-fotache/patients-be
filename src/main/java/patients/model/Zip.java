@@ -1,5 +1,5 @@
 package patients.model;
-// Generated Jul 23, 2016 7:02:42 PM by Hibernate Tools 5.1.0.Beta1
+// Generated Jul 25, 2016 1:37:07 PM by Hibernate Tools 5.1.0.Beta1
 
 import java.util.HashSet;
 import java.util.Set;
@@ -23,7 +23,7 @@ public class Zip implements java.io.Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -2307725430780120339L;
+	private static final long serialVersionUID = 4712526493883587479L;
 	private int zipid;
 	private Integer version;
 	private String zip;
@@ -31,6 +31,7 @@ public class Zip implements java.io.Serializable {
 	private Integer landId;
 	private String selfCreated;
 	private Integer deleted;
+	private Set<Insurance> insurances = new HashSet<Insurance>(0);
 	private Set<Patient> patients = new HashSet<Patient>(0);
 
 	public Zip() {
@@ -40,13 +41,14 @@ public class Zip implements java.io.Serializable {
 		this.zipid = zipid;
 	}
 
-	public Zip(int zipid, String zip, String city, Integer landId, String selfCreated, Integer deleted, Set<Patient> patients) {
+	public Zip(int zipid, String zip, String city, Integer landId, String selfCreated, Integer deleted, Set<Insurance> insurances, Set<Patient> patients) {
 		this.zipid = zipid;
 		this.zip = zip;
 		this.city = city;
 		this.landId = landId;
 		this.selfCreated = selfCreated;
 		this.deleted = deleted;
+		this.insurances = insurances;
 		this.patients = patients;
 	}
 
@@ -114,6 +116,16 @@ public class Zip implements java.io.Serializable {
 
 	public void setDeleted(Integer deleted) {
 		this.deleted = deleted;
+	}
+
+	@JsonIgnore
+	@OneToMany(fetch = FetchType.EAGER, mappedBy = "zip")
+	public Set<Insurance> getInsurances() {
+		return this.insurances;
+	}
+
+	public void setInsurances(Set<Insurance> insurances) {
+		this.insurances = insurances;
 	}
 
 	@JsonIgnore

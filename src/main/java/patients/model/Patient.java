@@ -1,8 +1,7 @@
 package patients.model;
-// Generated Jul 23, 2016 7:02:42 PM by Hibernate Tools 5.1.0.Beta1
+// Generated Jul 25, 2016 1:37:07 PM by Hibernate Tools 5.1.0.Beta1
 
 import java.util.Date;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -10,6 +9,8 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Version;
 
 /**
@@ -22,7 +23,7 @@ public class Patient implements java.io.Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -6528299789384708683L;
+	private static final long serialVersionUID = -6060697695012732984L;
 	private int internalNumber;
 	private Integer version;
 	private Insurance insurance;
@@ -87,17 +88,11 @@ public class Patient implements java.io.Serializable {
 		this.internalNumber = internalNumber;
 	}
 
-	public Patient(int internalNumber, Insurance insurance, Zip zip, Integer patientId, String patientType, String sex,
-			String politeAddress, String letterPoliteAddress, String lastNamePrefix, String title, String firstName,
-			String lastName, Date dateOfBirth, String street, String countryCode, String city, String homePhone,
-			String workPhone, String mobilePhone, String fax, String email, String www, String staffId,
-			Integer doctorId, String healthInsuranceAccount, String healthInsuranceStatus, String statusExtension,
-			String cardValidTo, String surchargeStatus, String homepatient, Integer distance, String handlingType,
-			String altPayeeActive, String appoliteAddress, String apletterPoliteAddress, String aplastNamePrefix,
-			String aptitle, String aplastName, String apfirstName, String apstreet, String apzip, String apcity,
-			String profession, String company, String bankId, String bankName, String bankAccount, String active,
-			String recordCreationDate, String recordModificationDate, String remark, Integer deleted,
-			String extPatientId, String iban, String bic) {
+	public Patient(int internalNumber, Insurance insurance, Zip zip, Integer patientId, String patientType, String sex, String politeAddress, String letterPoliteAddress, String lastNamePrefix, String title, String firstName,
+			String lastName, Date dateOfBirth, String street, String countryCode, String city, String homePhone, String workPhone, String mobilePhone, String fax, String email, String www, String staffId, Integer doctorId,
+			String healthInsuranceAccount, String healthInsuranceStatus, String statusExtension, String cardValidTo, String surchargeStatus, String homepatient, Integer distance, String handlingType, String altPayeeActive,
+			String appoliteAddress, String apletterPoliteAddress, String aplastNamePrefix, String aptitle, String aplastName, String apfirstName, String apstreet, String apzip, String apcity, String profession, String company,
+			String bankId, String bankName, String bankAccount, String active, String recordCreationDate, String recordModificationDate, String remark, Integer deleted, String extPatientId, String iban, String bic) {
 		this.internalNumber = internalNumber;
 		this.insurance = insurance;
 		this.zip = zip;
@@ -277,7 +272,8 @@ public class Patient implements java.io.Serializable {
 		this.lastName = lastName;
 	}
 
-	@Column(name = "DateOfBirth")
+	@Temporal(TemporalType.DATE)
+	@Column(name = "DateOfBirth", length = 10)
 	public Date getDateOfBirth() {
 		return this.dateOfBirth;
 	}

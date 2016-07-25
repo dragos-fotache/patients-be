@@ -1,5 +1,5 @@
 package patients.model;
-// Generated Jul 23, 2016 7:02:42 PM by Hibernate Tools 5.1.0.Beta1
+// Generated Jul 25, 2016 1:37:07 PM by Hibernate Tools 5.1.0.Beta1
 
 import java.util.HashSet;
 import java.util.Set;
@@ -7,6 +7,8 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Version;
@@ -23,9 +25,10 @@ public class Insurance implements java.io.Serializable {
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = -4360541550344348848L;
+	private static final long serialVersionUID = 2645688377636901245L;
 	private int healthInsuranceId;
 	private Integer version;
+	private Zip zip;
 	private String healthInsuranceType;
 	private String healthInsuranceName;
 	private Integer priceGroupId;
@@ -36,7 +39,6 @@ public class Insurance implements java.io.Serializable {
 	private String validTo;
 	private String deductible;
 	private String street;
-	private String zipid;
 	private String city;
 	private String pobox;
 	private String phone;
@@ -56,12 +58,10 @@ public class Insurance implements java.io.Serializable {
 		this.healthInsuranceId = healthInsuranceId;
 	}
 
-	public Insurance(int healthInsuranceId, String healthInsuranceType, String healthInsuranceName,
-			Integer priceGroupId, Integer iknumber, String vknumber, String shortNumber, String validFrom,
-			String validTo, String deductible, String street, String zipid, String city, String pobox, String phone,
-			String fax, String email, String www, String remark, String insurancePayerId, String selfCreated,
-			Integer deleted, Set<Patient> patients) {
+	public Insurance(int healthInsuranceId, Zip zip, String healthInsuranceType, String healthInsuranceName, Integer priceGroupId, Integer iknumber, String vknumber, String shortNumber, String validFrom, String validTo, String deductible,
+			String street, String city, String pobox, String phone, String fax, String email, String www, String remark, String insurancePayerId, String selfCreated, Integer deleted, Set<Patient> patients) {
 		this.healthInsuranceId = healthInsuranceId;
+		this.zip = zip;
 		this.healthInsuranceType = healthInsuranceType;
 		this.healthInsuranceName = healthInsuranceName;
 		this.priceGroupId = priceGroupId;
@@ -72,7 +72,6 @@ public class Insurance implements java.io.Serializable {
 		this.validTo = validTo;
 		this.deductible = deductible;
 		this.street = street;
-		this.zipid = zipid;
 		this.city = city;
 		this.pobox = pobox;
 		this.phone = phone;
@@ -105,6 +104,16 @@ public class Insurance implements java.io.Serializable {
 
 	public void setVersion(Integer version) {
 		this.version = version;
+	}
+
+	@ManyToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "ZIPID")
+	public Zip getZip() {
+		return this.zip;
+	}
+
+	public void setZip(Zip zip) {
+		this.zip = zip;
 	}
 
 	@Column(name = "HealthInsuranceType", length = 65535)
@@ -195,15 +204,6 @@ public class Insurance implements java.io.Serializable {
 
 	public void setStreet(String street) {
 		this.street = street;
-	}
-
-	@Column(name = "ZIPID", length = 65535)
-	public String getZipid() {
-		return this.zipid;
-	}
-
-	public void setZipid(String zipid) {
-		this.zipid = zipid;
 	}
 
 	@Column(name = "City", length = 65535)
