@@ -17,13 +17,15 @@ public enum PatientsService {
 	INSTANCE;
 
 	private static SessionFactory factory;
+	
+	static {
+		factory = new Configuration().configure().buildSessionFactory();
+	}
 
 	public List<Patient> getPatients() {
 
 		List<Patient> result = null;
 		
-		factory = new Configuration().configure().buildSessionFactory();
-
 		Session session = factory.openSession();
 		Transaction tx = null;
 		try {
@@ -45,24 +47,24 @@ public enum PatientsService {
 
 	public PatientSliceAndCount getPatientsSlice(LazyLoadData lazyLoadData) {
 		
-		factory = new Configuration().configure().buildSessionFactory();
-
 		Session session = factory.openSession();
 		Transaction tx = null;
 		try {
 			tx = session.beginTransaction();
+
+			String searchStringParam = lazyLoadData.getSearchStringParam().trim();
 			
 			Query searchQuery = session.createQuery("FROM Patient where lastName like ? or firstName like ?");
-			searchQuery.setParameter(0, "%" + lazyLoadData.getSearchStringParam() + "%");
-			searchQuery.setParameter(1, "%" + lazyLoadData.getSearchStringParam() + "%");
+			searchQuery.setParameter(0, "%" + searchStringParam + "%");
+			searchQuery.setParameter(1, "%" + searchStringParam + "%");
 			List<Patient> patients = (List<Patient>)searchQuery
 										   .setFirstResult(lazyLoadData.getFirst())
 										   .setMaxResults(lazyLoadData.getRows())
 										   .getResultList();
 			
 			Query countQuery = session.createQuery("select count(p) from Patient p where lastName like ? or firstName like ?");
-			countQuery.setParameter(0, "%" + lazyLoadData.getSearchStringParam() + "%");
-			countQuery.setParameter(1, "%" + lazyLoadData.getSearchStringParam() + "%");
+			countQuery.setParameter(0, "%" + searchStringParam + "%");
+			countQuery.setParameter(1, "%" + searchStringParam + "%");
 			Long count = (Long) countQuery.getSingleResult();
 			
 			tx.commit();
@@ -82,22 +84,43 @@ public enum PatientsService {
 	
 	public InsuranceSliceAndCount getInsurancesSlice(LazyLoadData lazyLoadData) {
 		
-		factory = new Configuration().configure().buildSessionFactory();
-		
 		Session session = factory.openSession();
 		Transaction tx = null;
 		try {
 			tx = session.beginTransaction();
 			
-			Query searchQuery = session.createQuery("FROM Insurance where healthInsuranceName like ?");
-			searchQuery.setParameter(0, "%" + lazyLoadData.getSearchStringParam() + "%");
+			String searchString = lazyLoadData.getSearchStringParam().trim();
+			
+			boolean possibleIK = false;
+			int ik = 0;
+			
+			if (searchString.length() == 9) {
+				possibleIK = true;
+				try {
+					ik = Integer.parseInt(searchString);
+				} catch(NumberFormatException e) {
+					possibleIK = false;
+				}
+			}
+			
+			Query searchQuery;
+			Query countQuery;
+			if (possibleIK) {
+				searchQuery = session.createQuery("FROM Insurance where IKNumber = ?").setParameter(0, ik);
+				countQuery = session.createQuery("select count(i) from Insurance i where IKNumber = ?").setParameter(0, ik);
+			} else {
+				searchQuery = session.createQuery("FROM Insurance where healthInsuranceName like ?")
+									 .setParameter(0, "%" + searchString + "%");
+				countQuery = session.createQuery("select count(i) from Insurance i where healthInsuranceName like ?")
+									 .setParameter(0, "%" + searchString + "%");
+			}
+
+			
 			List<Insurance> insurances = (List<Insurance>)searchQuery
 					.setFirstResult(lazyLoadData.getFirst())
 					.setMaxResults(lazyLoadData.getRows())
 					.getResultList();
 			
-			Query countQuery = session.createQuery("select count(i) from Insurance i where healthInsuranceName like ?");
-			countQuery.setParameter(0, "%" + lazyLoadData.getSearchStringParam() + "%");
 			Long count = (Long) countQuery.getSingleResult();
 			
 			tx.commit();
