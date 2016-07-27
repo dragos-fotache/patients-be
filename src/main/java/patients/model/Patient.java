@@ -11,6 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 import javax.persistence.Version;
 
 /**
@@ -38,6 +39,7 @@ public class Patient implements java.io.Serializable {
 	private String firstName;
 	private String lastName;
 	private Date dateOfBirth;
+	private String dateOfBirthString;
 	private String street;
 	private String countryCode;
 	private String city;
@@ -658,6 +660,15 @@ public class Patient implements java.io.Serializable {
 
 	public void setBic(String bic) {
 		this.bic = bic;
+	}
+
+	@Transient
+	public String getDateOfBirthString() {
+		return dateOfBirthString;
+	}
+
+	public void setDateOfBirthString(String dateOfBirthString) {
+		this.dateOfBirthString = dateOfBirthString;
 	}
 
 }

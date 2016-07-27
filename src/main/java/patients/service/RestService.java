@@ -1,5 +1,7 @@
 package patients.service;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
@@ -108,6 +110,33 @@ public class RestService {
 				.status(Response.Status.OK)
 				.entity(insurances)
 				.build();
+	}
+	
+	@POST
+	@Produces("application/json")
+	@Consumes("application/json")
+	@Path("/patients/create")
+	public Response createPatient(Patient p) {
+		
+		processPatient(p);
+		
+		PatientsService.INSTANCE.createPatient(p);
+		
+		return Response
+				.status(Response.Status.OK)
+				.build();
+	}
+
+	private void processPatient(Patient p) {
+		
+		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		
+		try {
+			if (p.getDateOfBirthString() != null) {
+				p.setDateOfBirth(sdf.parse(p.getDateOfBirthString()));
+			}
+		} catch (ParseException e) {
+		}
 	}
 	
 	

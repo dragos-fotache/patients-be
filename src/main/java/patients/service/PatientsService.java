@@ -137,5 +137,22 @@ public enum PatientsService {
 		return null;
 		
 	}
+	
+	public void createPatient(Patient p) {
+		Session session = factory.openSession();
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+			
+			session.save(p);
+			
+			tx.commit();
+		} catch (HibernateException e) {
+			if (tx != null) tx.rollback();
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+	}
 
 }
