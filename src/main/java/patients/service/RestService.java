@@ -115,6 +115,20 @@ public class RestService {
 	@POST
 	@Produces("application/json")
 	@Consumes("application/json")
+	@Path("/zips")
+	public Response getZipsSlice(LazyLoadData lazyLoadData) {
+		
+		ZipSliceAndCount zips = PatientsService.INSTANCE.getZipsSlice(lazyLoadData);
+		
+		return Response
+				.status(Response.Status.OK)
+				.entity(zips)
+				.build();
+	}
+	
+	@POST
+	@Produces("application/json")
+	@Consumes("application/json")
 	@Path("/patients/create")
 	public Response createPatient(Patient p) {
 		

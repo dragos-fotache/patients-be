@@ -11,6 +11,7 @@ import org.hibernate.query.Query;
 
 import patients.model.Insurance;
 import patients.model.Patient;
+import patients.model.Zip;
 
 public enum PatientsService {
 
@@ -153,6 +154,60 @@ public enum PatientsService {
 		} finally {
 			session.close();
 		}
+	}
+
+	public ZipSliceAndCount getZipsSlice(LazyLoadData lazyLoadData) {
+		Session session = factory.openSession();
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+			
+			String searchString = lazyLoadData.getSearchStringParam().trim();
+			
+			boolean possibleZipNr = false;
+			int zip = 0;
+			
+			if (searchString.length() == 5) {
+				possibleZipNr = true;
+				try {
+					zip = Integer.parseInt(searchString);
+				} catch(NumberFormatException e) {
+					possibleZipNr = false;
+				}
+			}
+			
+			Query searchQuery;
+			Query countQuery;
+			if (possibleZipNr) {
+				searchQuery = session.createQuery("FROM Zip where zip = ?").setParameter(0, zip);
+				countQuery = session.createQuery("select count(z) from Zip z where zip = ?").setParameter(0, zip);
+			} else {
+				searchQuery = session.createQuery("FROM Zip where city like ?")
+									 .setParameter(0, "%" + searchString + "%");
+				countQuery = session.createQuery("select count(i) from Zip i where city like ?")
+									 .setParameter(0, "%" + searchString + "%");
+			}
+
+			
+			List<Zip> zips = (List<Zip>)searchQuery
+					.setFirstResult(lazyLoadData.getFirst())
+					.setMaxResults(lazyLoadData.getRows())
+					.getResultList();
+			
+			Long count = (Long) countQuery.getSingleResult();
+			
+			tx.commit();
+			
+			return new ZipSliceAndCount(zips, count);
+			
+		} catch (HibernateException e) {
+			if (tx != null) tx.rollback();
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		
+		return null;
 	}
 
 }
