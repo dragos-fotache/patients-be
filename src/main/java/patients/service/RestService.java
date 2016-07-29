@@ -1,5 +1,6 @@
 package patients.service;
 
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -11,6 +12,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
@@ -90,11 +92,11 @@ public class RestService {
 	@Path("/patients")
 	public Response getPatientsSlice(LazyLoadData lazyLoadData) {
 		
-		PatientSliceAndCount articles = PatientsService.INSTANCE.getPatientsSlice(lazyLoadData);
+		PatientSliceAndCount slice = PatientsService.INSTANCE.getPatientsSlice(lazyLoadData);
 		
 		return Response
 				.status(Response.Status.OK)
-				.entity(articles)
+				.entity(slice)
 				.build();
 	}
 	
@@ -132,26 +134,37 @@ public class RestService {
 	@Path("/patients/create")
 	public Response createPatient(Patient p) {
 		
-		processPatient(p);
-		
 		PatientsService.INSTANCE.createPatient(p);
 		
 		return Response
 				.status(Response.Status.OK)
 				.build();
 	}
-
-	private void processPatient(Patient p) {
+	
+	@POST
+	@Produces("application/json")
+	@Consumes("application/json")
+	@Path("/patients/update")
+	public Response updatePatient(Patient p) {
 		
-		SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+		PatientsService.INSTANCE.updatePatient(p);
 		
-		try {
-			if (p.getDateOfBirthString() != null) {
-				p.setDateOfBirth(sdf.parse(p.getDateOfBirthString()));
-			}
-		} catch (ParseException e) {
-		}
+		return Response
+				.status(Response.Status.OK)
+				.build();
 	}
 	
+	@POST
+	@Produces("application/json")
+	@Path("/patients/delete/{internalNumber}")
+	public Response deletePatient(@PathParam("internalNumber") int internalNumber) throws SQLException {
+		
+		PatientsService.INSTANCE.deleteArticle(internalNumber);
+		
+		return Response
+				.status(Response.Status.OK)
+				.build();
+	}
+
 	
 }

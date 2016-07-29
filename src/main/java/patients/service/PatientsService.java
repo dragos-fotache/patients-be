@@ -155,6 +155,23 @@ public enum PatientsService {
 			session.close();
 		}
 	}
+	
+	public void updatePatient(Patient p) {
+		Session session = factory.openSession();
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+			
+			session.update(p);
+			
+			tx.commit();
+		} catch (HibernateException e) {
+			if (tx != null) tx.rollback();
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+	}
 
 	public ZipSliceAndCount getZipsSlice(LazyLoadData lazyLoadData) {
 		Session session = factory.openSession();
@@ -208,6 +225,25 @@ public enum PatientsService {
 		}
 		
 		return null;
+	}
+
+	public void deleteArticle(int internalNumber) {
+		Session session = factory.openSession();
+		Transaction tx = null;
+		try {
+			tx = session.beginTransaction();
+			
+			Patient p = (Patient)session.load(Patient.class, internalNumber);
+			session.delete(p);
+			
+			tx.commit();
+		} catch (HibernateException e) {
+			if (tx != null) tx.rollback();
+			e.printStackTrace();
+		} finally {
+			session.close();
+		}
+		
 	}
 
 }
